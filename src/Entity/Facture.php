@@ -2,10 +2,21 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FactureRepository")
+ * @ApiResource(
+ *  normalizationContext= {
+ *     "groups"= {"facture_read"}
+ * },
+ * denormalizationContext={"disable_type_enforcement"= true}
+ * )
  */
 class Facture
 {
@@ -13,34 +24,61 @@ class Facture
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"facture_read","customer_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"facture_read","customer_read"})
+     * @Assert\NotBlank(message = "Le montant est obligatoire !")
+     * @Assert\Type(type ="numeric", message = "le montant n'est de bon dormat!")
      */
     private $montant;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"facture_read","customer_read"})
+     * @Assert\DateTime(message = "la date doit être de format YYY-MM-DD")
+     * @Assert\NotBlank(message = "la date doit être renseignée")
      */
     private $sentAt;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"facture_read","customer_read"})
+     * @Assert\NotBlank(message = "le statut doit être renseignée")
+     * @Assert\Choice(choices={"ENVOYé", "PAYé", "ANNULé"},
+     *  message = "le statut doit être ENVOYé, PAYé ou ANNULé"
+     * )
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="factures")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"facture_read"})
+     * @Assert\NotBlank(message = "le le client de la facture doit être renseignée")
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"facture_read"})
+     * @Assert\NotBlank(message = "le chrono doàit être renseignée")
+     * @Assert\Type(type = "integer", message = "le type doit être un entier")
      */
     private $chrono;
+
+      /**
+     * permet de recupéré le user du facture
+     *@Groups({"facture_read"})
+     *@return User
+     */
+
+    public function getUser() : User {
+        return $this->customer->getUser();
+    }
 
     public function getId(): ?int
     {
@@ -52,7 +90,7 @@ class Facture
         return $this->montant;
     }
 
-    public function setMontant(float $montant): self
+    public function setMontant($montant): self
     {
         $this->montant = $montant;
 
@@ -100,7 +138,7 @@ class Facture
         return $this->chrono;
     }
 
-    public function setChrono(int $chrono): self
+    public function setChrono($chrono): self
     {
         $this->chrono = $chrono;
 

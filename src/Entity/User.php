@@ -2,13 +2,20 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ApiResource
+ * @UniqueEntity("email", message="Un utilisateur ayant cette adresse Email existe déjà")
  */
 class User implements UserInterface
 {
@@ -16,11 +23,15 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"facture_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"facture_read"})
+     * @Assert\NotBlank(message = "L'email de famille du client est abligatoire")
+     * @Assert\Email(message = "Le format de l'adresse email doit être valide")
      */
     private $email;
 
@@ -32,16 +43,25 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message = "Le mot de passe est obligatoire")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"facture_read"})
+     * @Assert\NotBlank(message = "Le prenom est abligatoire")
+     * @Assert\Length(min=2, minMessage="le prenom doit compter au moins 2 caractères",
+     *                max = 255, maxMessage="le prenom doit compter au max 255 caractères" )
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"facture_read"})
+     * @Assert\NotBlank(message = "Le nom est abligatoire")
+     * @Assert\Length(min=2, minMessage="le nom doit compter au moins 2 caractères",
+     *                max = 255, maxMessage="le nom doit compter au max 255 caractères" )
      */
     private $nom;
 

@@ -40,17 +40,16 @@ class AppFixtures extends Fixture
 
                 $manager->persist($user);
 
-                for ($c=0; $c < 30; $c++) {
+                for ($c=0; $c < mt_rand(5 , 20); $c++) {
                     $customer = new Customer();
                     $customer->setNom($faker->firstName())
                              ->setPrenom($faker->lastName())
                              ->setEmail($faker->email())
-                             ->setCompany($faker->company())
+                             ->setCompany($faker->company)
                              ->setUser($user);
                  $manager->persist($customer);
-                }
-
-                for ($i=0; $i < mt_rand(3 , 10); $i++) {
+                 
+                 for ($i=0; $i < mt_rand(3 , 10); $i++) {
                     $facture = new Facture();
                     $facture->setMontant($faker->randomFloat(2, 250, 5000))
                             ->setSentAt($faker->dateTimeBetween('-6 months'))
@@ -61,6 +60,9 @@ class AppFixtures extends Fixture
                      $chrono++;
                      $manager->persist($facture);
                 }
+                }
+
+
         }
 
 

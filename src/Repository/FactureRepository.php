@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Facture;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,7 +19,17 @@ class FactureRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Facture::class);
     }
-
+public function findNextChrono(User $user){
+    return $this->createQueryBuilder("i")
+                ->select("i.chrono")
+                ->join("i.customer", "c")
+                ->where("c.user = :user")
+                ->setParameter("user", $user)
+                ->orderBy("i.chrono", "DESC")
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleScalarResult() + 1;
+}
     // /**
     //  * @return Facture[] Returns an array of Facture objects
     //  */

@@ -26,13 +26,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"facture_read","users_read"})
+     * @Groups({"facture_read","users_read","customer_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"facture_read","users_read"})
+     * @Groups({"facture_read","users_read","customer_read"})
      * @Assert\NotBlank(message = "L'email de famille du client est abligatoire")
      * @Assert\Email(message = "Le format de l'adresse email doit être valide")
      */
@@ -52,7 +52,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"facture_read","users_read"})
+     * @Groups({"facture_read","users_read","customer_read"})
      * @Assert\NotBlank(message = "Le prenom est abligatoire")
      * @Assert\Length(min=2, minMessage="le prenom doit compter au moins 2 caractères",
      *                max = 255, maxMessage="le prenom doit compter au max 255 caractères" )
@@ -61,7 +61,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"facture_read","users_read"})
+     * @Groups({"facture_read","users_read","customer_read"})
      * @Assert\NotBlank(message = "Le nom est abligatoire")
      * @Assert\Length(min=2, minMessage="le nom doit compter au moins 2 caractères",
      *                max = 255, maxMessage="le nom doit compter au max 255 caractères" )

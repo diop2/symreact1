@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import Pagination from '../components/Pagination';
-import axios from 'axios';
 import moment from 'moment';
 import FacturesAPI from '../services/FacturesAPI'
 
